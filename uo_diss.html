@@ -43,9 +43,9 @@
 							<li>Download the aforementioned git repo as zip: <a href="https://github.com/unofficial-uoregon-dissertation-formats/unofficial-uoregon-grad-school-dissertation-latex-markdown-apa-format">https://github.com/unofficial-uoregon-dissertation-formats/unofficial-uoregon-grad-school-dissertation-latex-markdown-apa-format</a></li>
 							<li>Extract zip</li>
 							<li>Open folder <code>latex_files</code> in VS Code</li>
-							<li>Add to <code>latex-workshop.latex.recipes</code> in <code>settings.json</code>:
+							<li>In <code>settings.json</code>, add as <i>first</i> entry to <code>latex-workshop.latex.recipes</code>:
 							<code>{&quot;name&quot;: &quot;make&quot;, &quot;tools&quot;: [&quot;make&quot;]}</code></li>
-							<li>Add to <code>latex-workshop.latex.tools</code> in <code>settings.json</code>:
+							<li>Again, in <code>settings.json</code>, add as <i>first</i> entry to <code>latex-workshop.latex.tools</code>:
 							<code>{&quot;name&quot;: &quot;make&quot;, &quot;command&quot;: &quot;make&quot;, &quot;args&quot;: [], &quot;env&quot;: {}}</code></li>
 							<li>Time to test. Edit author&#39;s name in <code>cover.tex</code>. Save. It should auto-build.</li>
 							</ol>
