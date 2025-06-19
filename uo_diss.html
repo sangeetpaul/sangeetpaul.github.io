@@ -1,0 +1,76 @@
+<!DOCTYPE HTML>
+<!--
+	Hyperspace by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Sangeet Paul</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+
+		<!-- Header -->
+			<header id="header">
+				<a href="index.html" class="title">Hyperspace</a>
+				<nav>
+					<ul>
+						<li><a href="index.html">Home</a></li>
+						<li><a href="uo_diss.html" class="active">UO Dissertation</a></li>
+					</ul>
+				</nav>
+			</header>
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<section id="main" class="wrapper">
+						<div class="inner">
+							<h1 class="major">UO Dissertation</h1>
+							<p>If you want to use Overleaf, it already has a template: <a href="https://www.overleaf.com/latex/templates/uothesis-memoir/nnwbzcpckqhd">https://www.overleaf.com/latex/templates/uothesis-memoir/nnwbzcpckqhd</a></p>
+							<p>If you don't have a paid Overleaf account, you'll eventually run out of compilation time. VS Code is a good alternative that can compile LaTeX locally on your device, hence you're only limited by your device, your imagination, and your mental health. You can also keep your thesis synced with a git repo so that you never lose your work.</p>
+							<p>To write your thesis in VS Code, follow these steps:</p>
+							<ol>
+							<li>Make sure VS Code is installed</li>
+							<li>Install TeX Live: <a href="https://www.tug.org/texlive/">https://www.tug.org/texlive/</a></li>
+							<li>Install extension LaTeX Workshop in VS Code: <a href="https://marketplace.visualstudio.com/items?itemName=James-Yu.latex-workshop">https://marketplace.visualstudio.com/items?itemName=James-Yu.latex-workshop</a></li>
+							<li>Download this git repo as zip: <a href="https://github.com/unofficial-uoregon-dissertation-formats/unofficial-uoregon-grad-school-dissertation-latex-markdown-apa-format">https://github.com/unofficial-uoregon-dissertation-formats/unofficial-uoregon-grad-school-dissertation-latex-markdown-apa-format</a></li>
+							<li>Extract zip</li>
+							<li>Open folder <code>latex_files</code> in VS Code</li>
+							<li>Add to <code>latex-workshop.latex.recipes</code> in <code>settings.json</code>:
+							<code>{&quot;name&quot;: &quot;make&quot;, &quot;tools&quot;: [&quot;make&quot;]}</code></li>
+							<li>Add to <code>latex-workshop.latex.tools</code> in <code>settings.json</code>:
+							<code>{&quot;name&quot;: &quot;make&quot;, &quot;command&quot;: &quot;make&quot;, &quot;args&quot;: [], &quot;env&quot;: {}}</code></li>
+							<li>Time to test. Edit author&#39;s name in <code>cover.tex</code>. Save. It should auto-build.</li>
+							</ol>
+							<center><img src="images/congratulations.gif" alt="Congratulations"></center>
+						</div>
+					</section>
+
+			</div>
+
+		<!-- Footer -->
+			<footer id="footer" class="wrapper alt">
+				<div class="inner">
+					<ul class="menu">
+						<li>&copy; Untitled. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+					</ul>
+				</div>
+			</footer>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>
