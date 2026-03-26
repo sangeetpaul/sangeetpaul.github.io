@@ -7,4 +7,6 @@ redirect_from:
   - /about.html
 ---
 
-This is Sangeet Paul's home on the web! Stay tuned!
+I’m Sangeet, a computational astrophysicist. I study black holes using gravitational waves. I love solving problems.
+
+You can find my resume as a pdf [here](files/sangeet_paul_resume.pdf).
