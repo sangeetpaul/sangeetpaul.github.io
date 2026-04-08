@@ -12,13 +12,19 @@ redirect_from:
 Education
 ======
 * PhD in Physics, University of Oregon, 2025
-* MSc in Physics, NISER, 2018
+* BSc-MSc in Physics, NISER, HBNI, 2018
 
 Skills
 ======
-* Bayesian statistics
-* Machine learning
-* GPU acceleration
+* __General__: Bayesian statistics, MCMC, Cluster analysis, Digital signal processing, Machine learning, Normalizing flows
+* __Machine learning__: tensorflow, keras, scikit-learn
+* __GPU acceleration__: jax, cupy, CUDA
+* __Miscellaneous__: emcee, pandas, scipy, numpy, matplotlib, numpyro
+* __Programming Languages__: _fluent_: Python || _working knowledge_: C, C++, R, Java
+* __Software__: VS Code, Jupyter, PyCharm, Git, LaTeX, Mathematica, MATLAB
+* __Astronomy__: astropy, bilby, pycbc, gwpy
+* __Physics__: Gravitational-wave astronomy, General relativity, Quantum mechanics, Quantum field theory
+* __Natural Languages__: English, Hindi, Odia, Bengali, Gahaḷā
 
 Work experience
 ======
