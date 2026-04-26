@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>India Election Tracker 2026</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f7f6f2;
+      --surface: #ffffff;
+      --surface2: #f1f0ec;
+      --border: rgba(0,0,0,0.1);
+      --border-md: rgba(0,0,0,0.18);
+      --text: #1a1a18;
+      --text-muted: #6b6a66;
+      --text-hint: #9e9d99;
+      --accent: #1D9E75;
+      --accent-light: #E1F5EE;
+      --accent-text: #0F6E56;
+      --orange: #e55a00;
+      --red: #b91c1c;
+      --blue: #185FA5;
+      --blue-light: #E6F1FB;
+      --amber-light: #FAEEDA;
+      --amber-text: #854F0B;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --shadow: 0 1px 3px rgba(0,0,0,0.07), 0 4px 12px rgba(0,0,0,0.05);
+      --shadow-card: 0 2px 8px rgba(0,0,0,0.08), 0 8px 24px rgba(0,0,0,0.06);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #1a1a18;
+        --surface: #242422;
+        --surface2: #2e2e2b;
+        --border: rgba(255,255,255,0.09);
+        --border-md: rgba(255,255,255,0.16);
+        --text: #f0ede6;
+        --text-muted: #a09e98;
+        --text-hint: #6b6a66;
+        --accent-light: #0a3326;
+        --accent-text: #5DCAA5;
+        --blue-light: #0c2240;
+        --amber-light: #2a1f0a;
+        --amber-text: #FAC775;
+      }
+    }
+
+    body {
+      font-family: -apple-system, 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 1.5rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(8px);
+    }
+    .header-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .header-title { font-size: 1.25rem; font-weight: 600; color: var(--text); }
+    .header-sub { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
+    .header-badge {
+      font-size: 0.7rem;
+      padding: 3px 10px;
+      border-radius: 20px;
+      background: var(--accent-light);
+      color: var(--accent-text);
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+    .flag { display: inline-flex; gap: 2px; margin-right: 6px; }
+    .flag span { display: inline-block; width: 10px; height: 14px; border-radius: 1px; }
+
+    /* ── Layout ── */
+    .page { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+    /* ── Summary strip ── */
+    .summary-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+      margin-bottom: 2rem;
+    }
+    .summary-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.1rem;
+      box-shadow: var(--shadow);
+    }
+    .summary-label { font-size: 0.7rem; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+    .summary-val { font-size: 1.5rem; font-weight: 600; color: var(--text); line-height: 1; }
+    .summary-sub { font-size: 0.72rem; color: var(--text-muted); margin-top: 3px; }
+
+    /* ── Nav tabs ── */
+    .nav-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1.5rem;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .nav-tab {
+      background: none;
+      border: none;
+      border-bottom: 2.5px solid transparent;
+      padding: 10px 18px;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: color 0.15s, border-color 0.15s;
+      font-family: inherit;
+    }
+    .nav-tab.active { color: var(--text); border-bottom-color: var(--accent); font-weight: 500; }
+    .nav-tab:hover:not(.active) { color: var(--text); background: var(--surface2); }
+
+    /* ── State cards grid ── */
+    .state-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+      margin-bottom: 1.5rem;
+    }
+    .state-card {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.1rem 1.2rem;
+      cursor: pointer;
+      transition: border-color 0.15s, box-shadow 0.15s, transform 0.1s;
+      box-shadow: var(--shadow);
+    }
+    .state-card:hover { border-color: var(--border-md); box-shadow: var(--shadow-card); transform: translateY(-1px); }
+    .state-card.selected { border-color: var(--accent); border-width: 2px; }
+    .state-card-name { font-size: 0.95rem; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+    .state-card-meta { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px; line-height: 1.4; }
+    .status-badge {
+      display: inline-block;
+      font-size: 0.68rem;
+      padding: 3px 8px;
+      border-radius: 20px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+    }
+    .badge-voted { background: var(--accent-light); color: var(--accent-text); }
+    .badge-pending { background: var(--amber-light); color: var(--amber-text); }
+    .badge-counting { background: var(--blue-light); color: var(--blue); }
+    .turnout-wrap { margin-top: 10px; }
+    .turnout-bar { height: 4px; border-radius: 4px; background: var(--surface2); overflow: hidden; }
+    .turnout-fill { height: 100%; border-radius: 4px; background: var(--accent); }
+    .turnout-label { font-size: 0.7rem; color: var(--text-muted); margin-top: 4px; }
+
+    /* ── Detail panel ── */
+    .detail-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-card);
+    }
+    .detail-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem; gap: 1rem; flex-wrap: wrap; }
+    .detail-title { font-size: 1.25rem; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+    .detail-subtitle { font-size: 0.825rem; color: var(--text-muted); }
+    .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 1.5rem; }
+    .stat-box { background: var(--surface2); border-radius: var(--radius-sm); padding: 10px 12px; }
+    .stat-label { font-size: 0.68rem; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+    .stat-val { font-size: 1.2rem; font-weight: 600; color: var(--text); }
+
+    /* ── Parties ── */
+    .party-section-title { font-size: 0.7rem; color: var(--text-hint); text-transform: uppercase; letter-spacing: 0.07em; font-weight: 600; margin-bottom: 10px; }
+    .party-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .party-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .party-name { font-size: 0.825rem; color: var(--text); flex: 1; min-width: 0; }
+    .party-bar-wrap { flex: 2; height: 6px; background: var(--surface2); border-radius: 4px; overflow: hidden; min-width: 60px; }
+    .party-bar-fill { height: 100%; border-radius: 4px; }
+    .party-note { font-size: 0.72rem; color: var(--text-muted); min-width: 80px; text-align: right; }
+    .detail-context { font-size: 0.8rem; color: var(--text-muted); line-height: 1.6; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
+
+    /* ── Timeline ── */
+    .timeline { display: flex; flex-direction: column; gap: 0; }
+    .timeline-item { display: flex; gap: 0; position: relative; }
+    .timeline-left { display: flex; flex-direction: column; align-items: center; width: 80px; flex-shrink: 0; padding-top: 4px; }
+    .timeline-date-label { font-size: 0.72rem; color: var(--text-muted); text-align: center; line-height: 1.3; }
+    .timeline-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--border-md); border: 2px solid var(--surface); margin: 6px 0; flex-shrink: 0; }
+    .timeline-dot.done { background: var(--accent); }
+    .timeline-dot.key { background: var(--blue); width: 12px; height: 12px; }
+    .timeline-line { width: 2px; background: var(--border); flex: 1; min-height: 20px; }
+    .timeline-item:last-child .timeline-line { display: none; }
+    .timeline-right { flex: 1; padding: 0 0 1.25rem 1rem; }
+    .timeline-event { font-size: 0.875rem; color: var(--text); font-weight: 500; }
+    .timeline-detail { font-size: 0.78rem; color: var(--text-muted); margin-top: 3px; }
+    .timeline-highlight { background: var(--accent-light); border-radius: var(--radius-sm); padding: 8px 12px; border-left: 3px solid var(--accent); }
+    .timeline-highlight .timeline-event { color: var(--accent-text); }
+    .timeline-highlight-blue { background: var(--blue-light); border-radius: var(--radius-sm); padding: 8px 12px; border-left: 3px solid var(--blue); }
+    .timeline-highlight-blue .timeline-event { color: var(--blue); }
+
+    /* ── Turnout chart ── */
+    .chart-wrap { position: relative; width: 100%; height: 300px; margin-bottom: 1rem; }
+    .legend-wrap { display: flex; flex-wrap: wrap; gap: 14px; font-size: 0.78rem; color: var(--text-muted); margin-bottom: 1rem; }
+    .legend-item { display: flex; align-items: center; gap: 6px; }
+    .legend-swatch { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+    .chart-note { font-size: 0.78rem; color: var(--text-muted); line-height: 1.6; }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      .stats-row { grid-template-columns: 1fr 1fr; }
+      .party-note { display: none; }
+      .detail-panel { padding: 1rem; }
+      .header-title { font-size: 1rem; }
+    }
+
+    /* ── State selector pills (state detail tab) ── */
+    .pill-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1.25rem; }
+    .pill {
+      font-size: 0.78rem;
+      padding: 5px 14px;
+      border-radius: 20px;
+      border: 1px solid var(--border-md);
+      background: var(--surface);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: inherit;
+    }
+    .pill:hover { background: var(--surface2); color: var(--text); }
+    .pill.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 1.5rem;
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--text-hint);
+    }
+    footer a { color: var(--accent-text); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div>
+      <div class="header-title">
+        <span class="flag">
+          <span style="background:#FF9933;"></span>
+          <span style="background:#ffffff;border:1px solid #ddd;"></span>
+          <span style="background:#138808;"></span>
+        </span>
+        India Election Tracker 2026
+      </div>
+      <div class="header-sub">Assembly elections · 4 states &amp; 1 union territory · 824 seats</div>
+    </div>
+    <span class="header-badge">Results: 4 May 2026</span>
+  </div>
+</header>
+
+<main class="page">
+
+  <!-- Summary strip -->
+  <div class="summary-strip">
+    <div class="summary-card">
+      <div class="summary-label">Contests</div>
+      <div class="summary-val">5</div>
+      <div class="summary-sub">4 states + Puducherry</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-label">Total seats</div>
+      <div class="summary-val">824</div>
+      <div class="summary-sub">legislators to be elected</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-label">Voting phases</div>
+      <div class="summary-val">4</div>
+      <div class="summary-sub">Apr 9, 23 &amp; 29</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-label">Highest turnout</div>
+      <div class="summary-val">92%</div>
+      <div class="summary-sub">West Bengal Phase 1</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-label">Count day</div>
+      <div class="summary-val">4 May</div>
+      <div class="summary-sub">2026 · Monday</div>
+    </div>
+  </div>
+
+  <!-- Nav tabs -->
+  <div class="nav-tabs" role="tablist">
+    <button class="nav-tab active" role="tab" onclick="showTab('overview')">Overview</button>
+    <button class="nav-tab" role="tab" onclick="showTab('states')">State details</button>
+    <button class="nav-tab" role="tab" onclick="showTab('timeline')">Timeline</button>
+    <button class="nav-tab" role="tab" onclick="showTab('turnout')">Voter turnout</button>
+  </div>
+
+  <!-- TAB: Overview -->
+  <div id="tab-overview">
+    <div class="state-grid" id="state-card-grid">
+      <!-- Injected by JS -->
+    </div>
+    <div class="detail-panel" id="overview-detail">
+      <!-- Injected by JS -->
+    </div>
+  </div>
+
+  <!-- TAB: State details -->
+  <div id="tab-states" style="display:none;">
+    <div class="pill-row" id="state-pill-row"></div>
+    <div id="state-detail-content"></div>
+  </div>
+
+  <!-- TAB: Timeline -->
+  <div id="tab-timeline" style="display:none;">
+    <div class="detail-panel">
+      <p class="party-section-title" style="margin-bottom:1.25rem;">Key dates — 2026 election schedule</p>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-left">
+            <div class="timeline-date-label">15 Mar<br>2026</div>
+            <div class="timeline-dot done"></div>
+            <div class="timeline-line"></div>
+          </div>
+          <div class="timeline-right">
+            <div class="timeline-event">ECI announces election schedule</div>
+            <div class="timeline-detail">Model Code of Conduct comes into immediate effect across all poll-going states &amp; UT</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-left">
+            <div class="timeline-date-label">23 Mar</div>
+            <div class="timeline-dot done"></div>
+            <div class="timeline-line"></div>
+          </div>
+          <div class="timeline-right">
+            <div class="timeline-event">Nomination deadline — Phase 1 states</div>
+            <div class="timeline-detail">Last date for Assam, Kerala &amp; Puducherry; scrutiny followed on 24 Mar</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-left">
+            <div class="timeline-date-label">9 Apr</div>
+            <div class="timeline-dot done" style="background:var(--accent);"></div>
+            <div class="timeline-line"></div>
+          </div>
+          <div class="timeline-right">
+            <div class="timeline-highlight">
+              <div class="timeline-event">Polling Day — Assam, Kerala &amp; Puducherry</div>
+              <div class="timeline-detail" style="color:var(--accent-text);">Single-phase polling in 3 contests (296 seats)</div>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-left">
+            <div class="timeline-date-label">23 Apr</div>
+            <div class="timeline-dot done" style="background:var(--accent);"></div>
+            <div class="timeline-line"></div>
+          </div>
+          <div class="timeline-right">
+            <div class="timeline-highlight">
+              <div class="timeline-event">Polling Day — Tamil Nadu &amp; West Bengal Phase 1</div>
+              <div class="timeline-detail" style="color:var(--accent-text);">85% turnout in TN (record); 92% turnout in WB Phase 1 (record)</div>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-left">
+            <div class="timeline-date-label">29 Apr</div>
+            <div class="timeline-dot" style="background:var(--amber-text); border-color:var(--surface);"></div>
+            <div class="timeline-line"></div>
+          </div>
+          <div class="timeline-right">
+            <div class="timeline-highlight" style="background:var(--amber-light); border-left-color:var(--amber-text);">
+              <div class="timeline-event" style="color:var(--amber-text);">West Bengal Phase 2</div>
+              <div class="timeline-detail" style="color:var(--amber-text);">Remaining constituencies go to polls · upcoming</div>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-left">
+            <div class="timeline-date-label">4 May<br>2026</div>
+            <div class="timeline-dot key"></div>
+            <div class="timeline-line"></div>
+          </div>
+          <div class="timeline-right">
+            <div class="timeline-highlight-blue">
+              <div class="timeline-event">Counting Day — all 5 contests</div>
+              <div class="timeline-detail" style="color:var(--blue);">Dry day declared · new governments to be formed</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: Voter Turnout -->
+  <div id="tab-turnout" style="display:none;">
+    <div class="detail-panel">
+      <p class="party-section-title" style="margin-bottom: 1rem;">Voter turnout by state / phase</p>
+      <div class="legend-wrap">
+        <div class="legend-item"><div class="legend-swatch" style="background:var(--accent);"></div> Voting complete (final/est.)</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:#B5D4F4;"></div> Pending (Phase 2)</div>
+      </div>
+      <div class="chart-wrap">
+        <canvas id="turnoutChart" role="img" aria-label="Bar chart showing voter turnout: West Bengal Phase 1 92%, Tamil Nadu 85%, Assam 81%, Kerala 78%, Puducherry 76%, West Bengal Phase 2 pending.">Turnout data: West Bengal Phase 1 92%, Tamil Nadu 85%, Assam 81%, Kerala 78%, Puducherry 76%, West Bengal Phase 2 pending.</canvas>
+      </div>
+      <p class="chart-note">Tamil Nadu and West Bengal Phase 1 both recorded their highest-ever voter participation since Independence, according to the Chief Election Commissioner. West Bengal Phase 2 (Apr 29) figures are not yet available. All state figures except West Bengal Phase 1 are estimates.</p>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  Data sourced from the <a href="https://eci.gov.in" target="_blank" rel="noopener">Election Commission of India</a> and official press releases. Updated Apr 2026.
+</footer>
+
+<script>
+const states = [
+  {
+    id: 'WB',
+    name: 'West Bengal',
+    seats: 294,
+    phases: 2,
+    pollDate: 'Apr 23 & Apr 29, 2026',
+    countDate: '4 May 2026',
+    electorate: '~7.3 Cr',
+    turnout: '92% (Phase 1)',
+    turnoutPct: 92,
+    status: 'Phase 1 done',
+    badgeClass: 'badge-voted',
+    incumbent: 'TMC (Trinamool Congress)',
+    cm: 'Mamata Banerjee',
+    parties: [
+      { name: 'TMC (Mamata Banerjee)', color: '#1D9E75', bar: 55, note: 'Incumbent — 4th term bid' },
+      { name: 'BJP (NDA)', color: '#e55a00', bar: 38, note: 'Primary challenger' },
+      { name: 'Left Front + Congress', color: '#b91c1c', bar: 14, note: 'Third force' },
+    ],
+    context: 'TMC seeks a record 4th consecutive term. BJP has focused on national security and anti-incumbency messaging. The Left Front–Congress alliance is seeking to regain relevance as a credible third force in Bengal politics.'
+  },
+  {
+    id: 'TN',
+    name: 'Tamil Nadu',
+    seats: 234,
+    phases: 1,
+    pollDate: 'Apr 23, 2026',
+    countDate: '4 May 2026',
+    electorate: '~6.3 Cr',
+    turnout: '85% (record)',
+    turnoutPct: 85,
+    status: 'Voting done',
+    badgeClass: 'badge-voted',
+    incumbent: 'DMK (Dravida Munnetra Kazhagam)',
+    cm: 'M.K. Stalin',
+    parties: [
+      { name: 'DMK + INDIA alliance', color: '#b91c1c', bar: 50, note: 'Incumbent — M.K. Stalin' },
+      { name: 'AIADMK', color: '#00897B', bar: 32, note: 'Main opposition' },
+      { name: 'BJP (NDA)', color: '#e55a00', bar: 27, note: '27 constituencies' },
+      { name: 'TVK (Vijay)', color: '#7F77DD', bar: 12, note: 'Debut — all 234 seats' },
+    ],
+    context: 'Chief Minister M.K. Stalin\'s DMK seeks re-election leading the INDIA alliance. Actor-turned-politician Vijay\'s TVK party makes its electoral debut contesting all 234 constituencies, adding a dramatic new dimension to the race.'
+  },
+  {
+    id: 'KL',
+    name: 'Kerala',
+    seats: 140,
+    phases: 1,
+    pollDate: 'Apr 9, 2026',
+    countDate: '4 May 2026',
+    electorate: '~2.7 Cr',
+    turnout: '~78%',
+    turnoutPct: 78,
+    status: 'Voting done',
+    badgeClass: 'badge-voted',
+    incumbent: 'LDF (Left Democratic Front)',
+    cm: 'Pinarayi Vijayan',
+    parties: [
+      { name: 'LDF (CPI-M led)', color: '#b91c1c', bar: 45, note: 'Incumbent' },
+      { name: 'UDF (Congress led)', color: '#185FA5', bar: 42, note: 'Main opposition' },
+      { name: 'NDA (BJP led)', color: '#e55a00', bar: 13, note: 'Third front' },
+    ],
+    context: 'Kerala\'s traditional bipolar rivalry between the CPI(M)-led LDF and the Congress-led UDF continues. LDF under Chief Minister Pinarayi Vijayan seeks another term; UDF aims to return to power in what is expected to be a close contest.'
+  },
+  {
+    id: 'AS',
+    name: 'Assam',
+    seats: 126,
+    phases: 1,
+    pollDate: 'Apr 9, 2026',
+    countDate: '4 May 2026',
+    electorate: '~2.3 Cr',
+    turnout: '~81%',
+    turnoutPct: 81,
+    status: 'Voting done',
+    badgeClass: 'badge-voted',
+    incumbent: 'BJP (NDA)',
+    cm: 'Himanta Biswa Sarma',
+    parties: [
+      { name: 'BJP + NDA alliance', color: '#e55a00', bar: 50, note: 'Incumbent — H.B. Sarma' },
+      { name: 'Congress + allies', color: '#185FA5', bar: 38, note: 'Primary opposition' },
+      { name: 'AGP & others', color: '#888780', bar: 12, note: 'Regional parties' },
+    ],
+    context: 'BJP seeks a third consecutive term in Assam under Chief Minister Himanta Biswa Sarma. The BJP first won the state in 2016 after decades of Congress dominance. Congress and BJP traded sharp accusations in the campaign run-up.'
+  },
+  {
+    id: 'PY',
+    name: 'Puducherry',
+    seats: 30,
+    phases: 1,
+    pollDate: 'Apr 9, 2026',
+    countDate: '4 May 2026',
+    electorate: '~10 L',
+    turnout: '~76%',
+    turnoutPct: 76,
+    status: 'Voting done',
+    badgeClass: 'badge-voted',
+    incumbent: 'AINRC-led NDA',
+    cm: 'N.R. Rangaswamy',
+    parties: [
+      { name: 'AINRC + NDA', color: '#e55a00', bar: 45, note: 'Incumbent — Rangaswamy' },
+      { name: 'Congress + DMK (INDIA)', color: '#185FA5', bar: 42, note: 'INDIA alliance' },
+      { name: 'Others / Independents', color: '#888780', bar: 13, note: 'Other parties' },
+    ],
+    context: 'One of three union territories with a legislative assembly. NDA led by AINRC\'s N.R. Rangaswamy seeks continuity on the basis of administrative links to the Centre. The Congress–DMK INDIA alliance challenges on development and welfare grounds.'
+  }
+];
+
+let selectedStateId = 'WB';
+let chartInst = null;
+
+function showTab(tab) {
+  ['overview','states','timeline','turnout'].forEach(t => {
+    document.getElementById('tab-'+t).style.display = (t === tab) ? '' : 'none';
+  });
+  document.querySelectorAll('.nav-tab').forEach((el, i) => {
+    const tabs = ['overview','states','timeline','turnout'];
+    el.classList.toggle('active', tabs[i] === tab);
+  });
+  if (tab === 'turnout') renderTurnoutChart();
+  if (tab === 'states') renderStateDetail(selectedStateId);
+}
+
+function buildOverviewCards() {
+  const grid = document.getElementById('state-card-grid');
+  grid.innerHTML = states.map(s => `
+    <div class="state-card ${s.id === selectedStateId ? 'selected' : ''}" onclick="selectOverviewCard('${s.id}')" role="button" tabindex="0" aria-label="${s.name}">
+      <div class="state-card-name">${s.name}</div>
+      <div class="state-card-meta">${s.seats} seats · ${s.phases > 1 ? s.phases + ' phases' : '1 phase'}<br>${s.pollDate}</div>
+      <span class="status-badge ${s.badgeClass}">${s.status}</span>
+      <div class="turnout-wrap">
+        <div class="turnout-bar"><div class="turnout-fill" style="width:${s.turnoutPct}%"></div></div>
+        <div class="turnout-label">${s.turnout} turnout</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderOverviewDetail(stateId) {
+  const d = states.find(s => s.id === stateId);
+  const partyHtml = d.parties.map(p => `
+    <div class="party-row">
+      <div class="party-dot" style="background:${p.color};"></div>
+      <span class="party-name">${p.name}</span>
+      <div class="party-bar-wrap"><div class="party-bar-fill" style="width:${p.bar}%;background:${p.color};"></div></div>
+      <span class="party-note">${p.note}</span>
+    </div>
+  `).join('');
+  document.getElementById('overview-detail').innerHTML = `
+    <div class="detail-header">
+      <div>
+        <div class="detail-title">${d.name}</div>
+        <div class="detail-subtitle">${d.seats} seats · ${d.pollDate}</div>
+      </div>
+      <span class="status-badge ${d.badgeClass}">${d.status}</span>
+    </div>
+    <div class="stats-row">
+      <div class="stat-box"><div class="stat-label">Total seats</div><div class="stat-val">${d.seats}</div></div>
+      <div class="stat-box"><div class="stat-label">Electorate</div><div class="stat-val">${d.electorate}</div></div>
+      <div class="stat-box"><div class="stat-label">Turnout</div><div class="stat-val">${d.turnout}</div></div>
+    </div>
+    <div>
+      <div class="party-section-title">Key contenders</div>
+      ${partyHtml}
+    </div>
+    <div class="detail-context">${d.context}</div>
+    <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border);font-size:0.8rem;color:var(--text-muted);">Count date: <strong style="color:var(--text);font-weight:500;">${d.countDate}</strong> &nbsp;·&nbsp; Incumbent: <strong style="color:var(--text);font-weight:500;">${d.incumbent}</strong></div>
+  `;
+}
+
+function selectOverviewCard(stateId) {
+  selectedStateId = stateId;
+  document.querySelectorAll('.state-card').forEach(c => c.classList.remove('selected'));
+  document.querySelectorAll('.state-card')[states.findIndex(s => s.id === stateId)].classList.add('selected');
+  renderOverviewDetail(stateId);
+}
+
+function buildStatePills() {
+  document.getElementById('state-pill-row').innerHTML = states.map(s => `
+    <button class="pill ${s.id === selectedStateId ? 'active' : ''}" onclick="renderStateDetail('${s.id}')">${s.name}</button>
+  `).join('');
+}
+
+function renderStateDetail(stateId) {
+  selectedStateId = stateId;
+  document.querySelectorAll('.pill').forEach((el, i) => {
+    el.classList.toggle('active', states[i].id === stateId);
+  });
+  const d = states.find(s => s.id === stateId);
+  const partyHtml = d.parties.map(p => `
+    <div class="party-row">
+      <div class="party-dot" style="background:${p.color};"></div>
+      <span class="party-name">${p.name}</span>
+      <div class="party-bar-wrap"><div class="party-bar-fill" style="width:${p.bar}%;background:${p.color};"></div></div>
+      <span class="party-note">${p.note}</span>
+    </div>
+  `).join('');
+  document.getElementById('state-detail-content').innerHTML = `
+    <div class="detail-panel">
+      <div class="detail-header">
+        <div>
+          <div class="detail-title">${d.name}</div>
+          <div class="detail-subtitle">${d.seats} seats · ${d.pollDate}</div>
+        </div>
+        <span class="status-badge ${d.badgeClass}">${d.status}</span>
+      </div>
+      <div class="stats-row">
+        <div class="stat-box"><div class="stat-label">Total seats</div><div class="stat-val">${d.seats}</div></div>
+        <div class="stat-box"><div class="stat-label">Electorate</div><div class="stat-val">${d.electorate}</div></div>
+        <div class="stat-box"><div class="stat-label">Turnout</div><div class="stat-val">${d.turnout}</div></div>
+      </div>
+      <div>
+        <div class="party-section-title">Key contenders</div>
+        ${partyHtml}
+      </div>
+      <div class="detail-context">${d.context}</div>
+      <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border);display:flex;gap:1.5rem;flex-wrap:wrap;font-size:0.8rem;color:var(--text-muted);">
+        <div>Incumbent party<br><strong style="color:var(--text);font-weight:500;">${d.incumbent}</strong></div>
+        <div>Chief Minister<br><strong style="color:var(--text);font-weight:500;">${d.cm}</strong></div>
+        <div>Count date<br><strong style="color:var(--text);font-weight:500;">${d.countDate}</strong></div>
+      </div>
+    </div>
+  `;
+}
+
+function renderTurnoutChart() {
+  if (chartInst) { chartInst.destroy(); chartInst = null; }
+  const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const gridColor = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.06)';
+  const textColor = isDark ? '#a09e98' : '#6b6a66';
+  const ctx = document.getElementById('turnoutChart').getContext('2d');
+  chartInst = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['WB Phase 1', 'Tamil Nadu', 'Assam', 'Kerala', 'Puducherry', 'WB Phase 2'],
+      datasets: [{
+        label: 'Turnout %',
+        data: [92, 85, 81, 78, 76, null],
+        backgroundColor: ['#1D9E75','#1D9E75','#1D9E75','#1D9E75','#1D9E75','#B5D4F4'],
+        borderRadius: 5,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => ctx.raw !== null ? ctx.raw + '% voter turnout' : 'Pending — Apr 29'
+          }
+        }
+      },
+      scales: {
+        y: {
+          min: 60,
+          max: 100,
+          ticks: { callback: v => v + '%', font: { size: 12 }, color: textColor },
+          grid: { color: gridColor }
+        },
+        x: {
+          ticks: { font: { size: 12 }, autoSkip: false, color: textColor },
+          grid: { display: false }
+        }
+      }
+    }
+  });
+}
+
+// Init
+buildOverviewCards();
+renderOverviewDetail('WB');
+buildStatePills();
+</script>
+</body>
+</html>
