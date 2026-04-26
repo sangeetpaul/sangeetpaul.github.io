@@ -1,22 +1,42 @@
 var addressPoints = [
   [
-    "Talk 1 on Relevant Topic in Your Field<br />UC San Francisco, Department of Testing; San Francisco, CA, USA",
-    37.7879363,
-    -122.4075201
+    "Hierarchical BBH mergers in GCs<br />AAS 2023; Seattle, Washington",
+    47.6038321,
+    -122.330062
   ],
   [
-    "Talk 2 on Relevant Topic in Your Field<br />London School of Testing; London, UK",
-    51.5074456,
-    -0.1277653
+    "BBH mergers in GCs<br />Intermediate-Mass Black Holes Meeting; San Juan, Puerto Rico",
+    18.3842391,
+    -66.05344
   ],
   [
-    "Tutorial 1 on Relevant Topic in Your Field<br />UC-Berkeley Institute for Testing Science; Berkeley, CA, USA",
-    37.8708393,
-    -122.272863
+    "Probing BBH formation channels with GWs<br />U Oregon; Eugene, Oregon",
+    44.0505054,
+    -123.0950506
   ],
   [
-    "Conference Proceeding talk 3 on Relevant Topic in Your Field<br />Testing Institute of America 2014 Annual Conference; Los Angeles, CA, USA",
-    34.0536909,
-    -118.242766
+    "Evidence for hierarchical BBH mergers<br />AAS 2025; National Harbor, Maryland",
+    38.783342,
+    -77.0148285
+  ],
+  [
+    "Bayesian GW PSD inference<br />GWANW 2023; Hanford, Washington",
+    46.5793709,
+    -119.3808693
+  ],
+  [
+    "Hierarchical BBH mergers in GCs & AGNs<br />AAS 2024; New Orleans, Louisiana",
+    29.9561422,
+    -90.0733934
+  ],
+  [
+    "Multi-messenger astronomy tools<br />Astronomical Software Development Workshop; NYC, New York",
+    40.7127281,
+    -74.0060152
+  ],
+  [
+    "Joint GW signal & noise inference<br />GWANW 2024; Hanford, Washington",
+    46.5793709,
+    -119.3808693
   ]
 ];
