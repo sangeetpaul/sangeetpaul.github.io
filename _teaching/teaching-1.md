@@ -4,7 +4,7 @@ collection: teaching
 type: "Grad and Undergrad courses"
 permalink: /teaching/teaching-1
 venue: "University of Oregon, Department of Physics"
-date: 2019-2025
+date: 2019-10-01
 location: "Eugene, Oregon"
 ---
 
