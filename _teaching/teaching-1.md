@@ -1,7 +1,7 @@
 ---
 title: "Teaching Assistant"
 collection: teaching
-type: "Grad & Undergrad courses"
+type: "Grad and Undergrad courses"
 permalink: /teaching/teaching-1
 venue: "University of Oregon, Department of Physics"
 date: 2019-2025
