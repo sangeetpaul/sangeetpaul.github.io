@@ -21,6 +21,3 @@ Undergrad-level courses
 * Fourier analysis
 * Algebra-based physics
 * Calculus-based physics
-
-<!-- Heading 3
-====== -->
