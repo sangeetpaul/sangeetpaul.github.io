@@ -8,6 +8,8 @@ date: 2019-10-01
 location: "Eugene, Oregon"
 ---
 
+Teaching assistant for physics, math, and computer science courses, both at graduate and undergraduate levels.
+
 Graduate-level courses
 ======
 * Scientific computation (machine learning)
