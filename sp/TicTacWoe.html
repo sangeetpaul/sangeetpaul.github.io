@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tic Tac Woe</title>
+  <link href="https://fonts.googleapis.com/css2?family=Schoolbell&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #f5f0e8;
+      --ink:      #1a1209;
+      --p1:       #c0392b;
+      --p2:       #1a5276;
+      --x-col:    #6d4c10;
+      --o-col:    #1a6b3c;
+      --tile-bg:  #fffdf7;
+      --tile-brd: #c8b99a;
+      --shadow:   #b8a98855;
+      --muted:    #8c7a5e;
+      --accent:   #e8a020;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Schoolbell', cursive;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      padding: 20px;
+      background-image:
+        repeating-linear-gradient(0deg, transparent, transparent 28px, #e8dfc833 28px, #e8dfc833 29px),
+        repeating-linear-gradient(90deg, transparent, transparent 28px, #e8dfc833 28px, #e8dfc833 29px);
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 22px;
+    }
+
+    header h1 {
+      font-size: clamp(2rem, 8vw, 3.4rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1;
+    }
+
+    header .subtitle {
+      font-family: 'Schoolbell', cursive;
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+
+    /* ── LAYOUT ─────────────────────────────────── */
+    .layout {
+      display: grid;
+      grid-template-columns: 160px 1fr 160px;
+      gap: 20px;
+      align-items: start;
+      width: min(680px, 100%);
+    }
+
+    /* ── SIDE PANELS ────────────────────────────── */
+    .side-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .player-card {
+      background: var(--tile-bg);
+      border: 2px solid var(--tile-brd);
+      border-radius: 12px;
+      padding: 12px 14px;
+      text-align: center;
+      transition: border-color 0.25s, box-shadow 0.25s, transform 0.2s;
+    }
+
+    .player-card .p-label {
+      font-family: 'Schoolbell', cursive;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .player-card .p-name {
+      font-size: 1.6rem;
+      font-weight: 800;
+      line-height: 1.1;
+      margin-top: 2px;
+    }
+
+    .player-card .p-score {
+      font-family: 'Schoolbell', cursive;
+      font-size: 1.9rem;
+      font-weight: 700;
+      margin-top: 4px;
+    }
+
+    .player-card.p1 .p-name { color: var(--p1); }
+    .player-card.p2 .p-name { color: var(--p2); }
+    .player-card.p1 .p-score { color: var(--p1); }
+    .player-card.p2 .p-score { color: var(--p2); }
+
+    .player-card.active {
+      border-color: var(--accent);
+      box-shadow: 0 4px 20px #e8a02044, 4px 4px 0 #c8820055;
+      transform: translateY(-2px);
+    }
+
+    /* ── CENTER ─────────────────────────────────── */
+    .center { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+
+    /* ── ACTIVE TILE ────────────────────────────── */
+    .tile-area {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .tile-label {
+      font-family: 'Schoolbell', cursive;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .active-tile {
+      width: 72px;
+      height: 72px;
+      background: var(--tile-bg);
+      border: 2.5px solid var(--tile-brd);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.6rem;
+      font-weight: 800;
+      box-shadow: 3px 3px 0 var(--shadow);
+      transition: transform 0.15s;
+      position: relative;
+    }
+
+    .active-tile.x-tile { color: var(--x-col); border-color: #b8910a; }
+    .active-tile.o-tile { color: var(--o-col); border-color: #1a9b5a; }
+    .active-tile.empty { color: var(--muted); font-size: 1.4rem; letter-spacing: 0.1em; font-family: 'Schoolbell', cursive; }
+
+    .active-tile.pop { animation: tileIn 0.22s cubic-bezier(.34,1.56,.64,1); }
+
+    @keyframes tileIn {
+      from { transform: scale(0.4) rotate(-8deg); opacity: 0; }
+      to   { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+
+    /* ── DECK COUNTS ────────────────────────────── */
+    .deck-info {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .deck-count-pill {
+      font-family: 'Schoolbell', cursive;
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      padding: 5px 12px;
+      border-radius: 8px;
+      border: 1.5px solid var(--tile-brd);
+      background: var(--tile-bg);
+    }
+
+    .deck-count-pill .sym { font-weight: 700; font-size: 1rem; }
+    .deck-count-pill .cnt { color: var(--muted); }
+
+    .deck-count-pill.x-pill .sym { color: var(--x-col); }
+    .deck-count-pill.o-pill .sym { color: var(--o-col); }
+
+    /* ── BOARD ──────────────────────────────────── */
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 7px;
+      width: min(280px, 90vw);
+    }
+
+    .cell {
+      aspect-ratio: 1;
+      background: var(--tile-bg);
+      border: 2px solid var(--tile-brd);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(2rem, 9vw, 3rem);
+      font-weight: 800;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s, transform 0.12s, box-shadow 0.15s;
+      box-shadow: 2px 2px 0 var(--shadow);
+      position: relative;
+      user-select: none;
+    }
+
+    .cell:hover:not(.taken):not(.locked) {
+      background: #fffae8;
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 2px 4px 0 var(--shadow);
+    }
+
+    .cell:active:not(.taken):not(.locked) { transform: scale(0.95); }
+
+    .cell.taken { cursor: default; }
+    .cell.locked { cursor: not-allowed; opacity: 0.5; }
+
+    .cell.x { color: var(--x-col); }
+    .cell.o { color: var(--o-col); }
+
+    .cell.winner-cell {
+      animation: winPulse 0.5s ease forwards;
+      z-index: 1;
+    }
+
+    .cell.winner-cell.x { background: #fff8e0; border-color: #c88200; box-shadow: 3px 3px 0 #c8820066, 0 0 18px #e8a02088; }
+    .cell.winner-cell.o { background: #e8fff4; border-color: #1a9b5a; box-shadow: 3px 3px 0 #1a9b5a66, 0 0 18px #1a9b5a88; }
+
+    @keyframes winPulse {
+      0%   { transform: scale(1); }
+      40%  { transform: scale(1.1); }
+      100% { transform: scale(1.04); }
+    }
+
+    .placed { animation: cellPop 0.2s cubic-bezier(.34,1.56,.64,1); }
+
+    @keyframes cellPop {
+      from { transform: scale(0.5); opacity: 0; }
+      to   { transform: scale(1); opacity: 1; }
+    }
+
+    /* ── STATUS BAR ─────────────────────────────── */
+    .status-bar {
+      font-family: 'Schoolbell', cursive;
+      font-size: 0.78rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-align: center;
+      min-height: 1.4em;
+    }
+
+    .status-bar.p1-turn { color: var(--p1); }
+    .status-bar.p2-turn { color: var(--p2); }
+    .status-bar.winner  { font-weight: 700; font-size: 0.9rem; color: var(--accent); }
+    .status-bar.draw    { color: var(--muted); }
+
+    /* ── BUTTONS ────────────────────────────────── */
+    .actions { display: flex; gap: 10px; margin-top: 4px; }
+
+    button {
+      font-family: 'Schoolbell', cursive;
+      font-weight: 700;
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 9px 20px;
+      border-radius: 8px;
+      border: 2px solid var(--tile-brd);
+      background: var(--tile-bg);
+      color: var(--muted);
+      cursor: pointer;
+      box-shadow: 2px 2px 0 var(--shadow);
+      transition: all 0.15s;
+    }
+
+    button:hover {
+      border-color: var(--ink);
+      color: var(--ink);
+      transform: translateY(-1px);
+      box-shadow: 3px 3px 0 var(--shadow);
+    }
+
+    button.primary {
+      border-color: var(--accent);
+      color: var(--x-col);
+      background: #fffae8;
+    }
+
+    button.primary:hover {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    /* ── RESPONSIVE ─────────────────────────────── */
+    @media (max-width: 520px) {
+      .layout {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+      }
+      .side-left  { order: 2; flex-direction: row; justify-content: center; }
+      .side-right { order: 3; flex-direction: row; justify-content: center; }
+      .center     { order: 1; }
+      .player-card { flex: 1; max-width: 160px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Tic Tac Woe</h1>
+  <div class="subtitle">Draw · Place · Win</div>
+</header>
+
+<div class="layout">
+
+  <!-- LEFT: Player 1 -->
+  <div class="side-panel side-left">
+    <div class="player-card p1 active" id="card-p1">
+      <div class="p-label">Player</div>
+      <div class="p-name">Red</div>
+      <div class="p-score" id="score-p1">0</div>
+    </div>
+  </div>
+
+  <!-- CENTER -->
+  <div class="center">
+
+    <div class="tile-area">
+      <div class="tile-label">Active Tile</div>
+      <div class="active-tile empty" id="active-tile">—</div>
+    </div>
+
+    <div class="deck-info">
+      <div class="deck-count-pill x-pill"><span class="sym">X</span> <span class="cnt">×<span id="count-x">5</span></span></div>
+      <div class="deck-count-pill o-pill"><span class="sym">O</span> <span class="cnt">×<span id="count-o">5</span></span></div>
+    </div>
+
+    <div class="board" id="board">
+      <div class="cell" data-i="0"></div>
+      <div class="cell" data-i="1"></div>
+      <div class="cell" data-i="2"></div>
+      <div class="cell" data-i="3"></div>
+      <div class="cell" data-i="4"></div>
+      <div class="cell" data-i="5"></div>
+      <div class="cell" data-i="6"></div>
+      <div class="cell" data-i="7"></div>
+      <div class="cell" data-i="8"></div>
+    </div>
+
+    <div class="status-bar p1-turn" id="status">Red's turn — place the tile</div>
+
+    <div class="actions">
+      <button class="primary" id="btn-new">New Game</button>
+      <button id="btn-reset">Reset Scores</button>
+    </div>
+
+  </div>
+
+  <!-- RIGHT: Player 2 -->
+  <div class="side-panel side-right">
+    <div class="player-card p2" id="card-p2">
+      <div class="p-label">Player</div>
+      <div class="p-name">Blue</div>
+      <div class="p-score" id="score-p2">0</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const WINS = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+
+  let deck = [];
+  let activeTile = null;
+  let board = Array(9).fill(null);
+  let currentPlayer = 1;
+  let gameOver = false;
+  let scores = {1: 0, 2: 0};
+
+  const cells        = document.querySelectorAll('.cell');
+  const activeTileEl = document.getElementById('active-tile');
+  const statusEl     = document.getElementById('status');
+  const countXEl     = document.getElementById('count-x');
+  const countOEl     = document.getElementById('count-o');
+  const cardP1       = document.getElementById('card-p1');
+  const cardP2       = document.getElementById('card-p2');
+  const scoreP1El    = document.getElementById('score-p1');
+  const scoreP2El    = document.getElementById('score-p2');
+
+  const playerName = p => p === 1 ? 'Red' : 'Blue';
+
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function buildDeck() {
+    return shuffle(['O','O','O','O','O','X','X','X','X','X']);
+  }
+
+  function renderCounts() {
+    const xLeft = deck.filter(t => t === 'X').length;
+    const oLeft = deck.filter(t => t === 'O').length;
+    countXEl.textContent = xLeft;
+    countOEl.textContent = oLeft;
+  }
+
+  function drawTile() {
+    if (deck.length === 0) return null;
+    return deck.shift();
+  }
+
+  function setActiveTile(sym) {
+    activeTile = sym;
+    activeTileEl.textContent = sym;
+    activeTileEl.className = `active-tile ${sym === 'X' ? 'x-tile' : 'o-tile'} pop`;
+    void activeTileEl.offsetWidth;
+  }
+
+  function clearActiveTile() {
+    activeTile = null;
+    activeTileEl.textContent = '—';
+    activeTileEl.className = 'active-tile empty';
+  }
+
+  function setTurnUI() {
+    cardP1.classList.toggle('active', currentPlayer === 1);
+    cardP2.classList.toggle('active', currentPlayer === 2);
+  }
+
+  function setStatus(msg, cls) {
+    statusEl.textContent = msg;
+    statusEl.className = `status-bar ${cls}`;
+  }
+
+  function checkWinner(boardState) {
+    for (const [a, b, c] of WINS) {
+      if (boardState[a] && boardState[b] && boardState[c]) {
+        const sa = boardState[a].symbol, sb = boardState[b].symbol, sc = boardState[c].symbol;
+        if (sa === sb && sb === sc) return { symbol: sa, line: [a, b, c] };
+      }
+    }
+    return null;
+  }
+
+  function handleCellClick(e) {
+    if (gameOver || activeTile === null) return;
+    const i = parseInt(e.currentTarget.dataset.i);
+    if (board[i]) return;
+
+    board[i] = { symbol: activeTile, player: currentPlayer };
+    const cell = cells[i];
+    cell.textContent = activeTile;
+    cell.classList.add('taken', activeTile.toLowerCase(), 'placed');
+    cell.addEventListener('animationend', () => cell.classList.remove('placed'), { once: true });
+
+    clearActiveTile();
+    renderCounts();
+
+    const result = checkWinner(board);
+    if (result) {
+      gameOver = true;
+      scores[currentPlayer]++;
+      updateScoreDisplay();
+      result.line.forEach(idx => cells[idx].classList.add('winner-cell', result.symbol.toLowerCase()));
+      cells.forEach((c, idx) => { if (!result.line.includes(idx) && !board[idx]) c.classList.add('locked'); });
+      setStatus(`${playerName(currentPlayer)} wins with a line of ${result.symbol}s! 🎉`, 'winner');
+      cardP1.classList.remove('active');
+      cardP2.classList.remove('active');
+      return;
+    }
+
+    if (board.every(v => v)) {
+      gameOver = true;
+      setStatus("It's a draw!", 'draw');
+      cardP1.classList.remove('active');
+      cardP2.classList.remove('active');
+      return;
+    }
+
+    currentPlayer = currentPlayer === 1 ? 2 : 1;
+    setTurnUI();
+
+    if (deck.length === 0) {
+      gameOver = true;
+      setStatus("No tiles left — draw!", 'draw');
+      return;
+    }
+
+    const next = drawTile();
+    setActiveTile(next);
+    renderCounts();
+    setStatus(`${playerName(currentPlayer)}'s turn — place the tile`, `p${currentPlayer}-turn`);
+  }
+
+  function updateScoreDisplay() {
+    scoreP1El.textContent = scores[1];
+    scoreP2El.textContent = scores[2];
+  }
+
+  let nextStarter = 1;
+
+  function newGame() {
+    deck = buildDeck();
+    board = Array(9).fill(null);
+    currentPlayer = nextStarter;
+    nextStarter = nextStarter === 1 ? 2 : 1;
+    gameOver = false;
+
+    cells.forEach(c => {
+      c.textContent = '';
+      c.className = 'cell';
+    });
+
+    const first = drawTile();
+    setActiveTile(first);
+    renderCounts();
+    setTurnUI();
+    setStatus(`${playerName(currentPlayer)}'s turn — place the tile`, `p${currentPlayer}-turn`);
+  }
+
+  cells.forEach(c => c.addEventListener('click', handleCellClick));
+  document.getElementById('btn-new').addEventListener('click', newGame);
+  document.getElementById('btn-reset').addEventListener('click', () => {
+    scores = {1: 0, 2: 0};
+    nextStarter = 1;
+    updateScoreDisplay();
+    newGame();
+  });
+
+  newGame();
+</script>
+</body>
+</html>
