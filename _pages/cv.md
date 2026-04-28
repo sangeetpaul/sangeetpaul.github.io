@@ -30,8 +30,8 @@ Work experience
 ======
 * 2019-2025: __Research Assistant__ at Institute of Fundamental Sciences, University of Oregon
   * Supervisor: Ben Farr
-  * __Hierarchical mergers of binary black holes in dynamical astrophysical environments__: Built JAX-accelerated Bayesian population inference software to find evidence of hierarchical mergers of binary black holes in gravitational wave catalogs using the coagulation model for black hole mergers in dynamical astrophysical environments, such as globular clusters and active galactic nuclei’ accretion disks.
-  * __Joint inference of astrophysical and noise parameters in gravitational wave data__: Built high-dimensional Bayesian inference software for time-series and frequency-series data from gravitational-wave interferometers to estimate astrophysical signal models and spline-based detector noise models simultaneously. Found localized correlations between signal waveform and noise power spectral density.
+  * [__Hierarchical mergers of binary black holes in dynamical astrophysical environments__](https://github.com/sangeetpaul/coagulation): Built JAX-accelerated Bayesian population inference software to find evidence of hierarchical mergers of binary black holes in gravitational wave catalogs using the coagulation model for black hole mergers in dynamical astrophysical environments, such as globular clusters and active galactic nuclei’ accretion disks.
+  * [__Joint inference of astrophysical and noise parameters in gravitational wave data__](https://git.ligo.org/sangeet.paul/bilby/-/tree/param): Built high-dimensional Bayesian inference software for time-series and frequency-series data from gravitational-wave interferometers to estimate astrophysical signal models and spline-based detector noise models simultaneously. Found localized correlations between signal waveform and noise power spectral density.
   * __Clustering algorithms for significantly uncertain data__: Built algorithms to cluster data with high uncertainty, such as data from gravitational-wave interferometers. Found probabilistic clusters and outliers in mass–spin space.
 
 * 2019-2025: __Teaching Assistant__ at Department of Physics, University of Oregon
@@ -44,7 +44,13 @@ Work experience
 * 2013-2018: __Research Scholar__ at NISER, HBNI
   * __Membrane – gravity duality in a large number of dimensions__: Demonstrated that black hole event horizons are analogous to hydrodynamic membranes.
   * __Analytical predictions of the mass function of halos__: Analyzed the effects of varying dark matter halos’ mass functions on astronomical and cosmological observations.
-  * __Magneto-optic Kerr effect__: experiment design: Constructed theory for an experiment to use the magneto-optic Kerr effect to analyze magnetized surfaces.
+  * __Magneto-optic Kerr effect: experiment design__: Constructed theory for an experiment to use the magneto-optic Kerr effect to analyze magnetized surfaces.
+
+* 2017: __Research Scholar__ at Institute of Physics, HBNI
+  * __Superstring theory: Tree-approximation scattering amplitudes__: Studied the foundations of superstring theory, starting with bosonic strings, moving on to supersymmetry and gauge interactions, finishing with the evaluation of tree-level scattering amplitudes.
+
+* 2016: __Research Scholar__ at Centre for Excellence in Basic Sciences, University of Mumbai
+  * __Quantum field theory: Decays of the Higgs boson__: Studied relativistic quantum mechanics, quantum electrodynamics, Feynman diagrams, renormalization, and gauge field theories. Analyzed the radiation of gluon jets, the Coleman-Weinberg potential, and the decays of the Higgs boson.
 
 Publications
 ======
