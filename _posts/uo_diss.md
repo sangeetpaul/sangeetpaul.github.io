@@ -1,7 +1,7 @@
 ---
 title: 'UO Dissertaion'
 date: 2025-07-30
-permalink: /posts/uo-diss/
+permalink: /posts/2025/07/uo-diss/
 author_profile: false
 tags:
   - UO
